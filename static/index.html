@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>勤怠打刻システム</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; background: #f4f7f6; }
+        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 90%; max-width: 400px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        #message { margin-top: 20px; padding: 10px; display: none; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>出勤打刻</h2>
+        <input type="text" id="user_id" placeholder="ユーザーID">
+        <input type="password" id="user_pass" placeholder="パスワード">
+        <button onclick="sendCheckIn()">出勤する</button>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        async function sendCheckIn() {
+            const user_id = document.getElementById('user_id').value;
+            const user_pass = document.getElementById('user_pass').value;
+            const msgDiv = document.getElementById('message');
+
+            try {
+                const response = await fetch('/api/CheckIn', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_id, user_pass })
+                    });
+                
+                const result = await response.json();
+                
+                msgDiv.style.display = 'block';
+                msgDiv.style.backgroundColor = '#d4edda';
+                msgDiv.innerHTML = `打刻完了<br>時間: ${result.time}<br>ユーザー: ${result.username}`;
+            } catch (error) {
+                msgDiv.style.display = 'block';
+                msgDiv.style.backgroundColor = '#f8d7da';
+                msgDiv.innerText = 'エラー: サーバーに接続できません';
+            }
+        }
+    </script>
+</body>
+</html>
