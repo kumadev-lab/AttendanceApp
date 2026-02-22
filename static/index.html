@@ -33,12 +33,18 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ user_id, user_pass })
                     });
-                
-                const result = await response.json();
-                
-                msgDiv.style.display = 'block';
-                msgDiv.style.backgroundColor = '#d4edda';
-                msgDiv.innerHTML = `打刻完了<br>時間: ${result.time}<br>ユーザー: ${result.username}`;
+
+                if (response.ok) {
+                    const result = await response.json();            
+                    msgDiv.style.display = 'block';
+                    msgDiv.style.backgroundColor = '#d4edda';
+                    msgDiv.innerHTML = `おはようございます！<br>打刻完了<br>時間: ${result.time}<br>社員ID: ${result.username}`;
+                } else {
+                    const errorData = await response.json();
+                    msgDiv.style.display = 'block';
+                    msgDiv.style.backgroundColor = '#f8d7da';
+                    msgDiv.innerText = `エラー: ${errorData.detail}`;
+                }
             } catch (error) {
                 msgDiv.style.display = 'block';
                 msgDiv.style.backgroundColor = '#f8d7da';
